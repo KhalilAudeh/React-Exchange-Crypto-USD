@@ -20,12 +20,17 @@ const HistoryData = (props) => {
   const [paginatedHistoricalData, setPaginatedHistoricalData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
+  // state boolean for clicking on arrows
+  const [clickedArrow, setClickedArrow] = useState(false);
+
   // when history data changes as trigger, update the component data using the below
   useEffect(() => {
     setHistoricalData(history);
 
     // set paginated data according to page size using lodash methods
-    setPaginatedHistoricalData(lodash(history).slice(0).take(4).value());
+    setPaginatedHistoricalData(
+      lodash(history).slice(0).take(PAGE_SIZE).value()
+    );
   }, [history]);
 
   // when user clicks filter, this function will be executed
@@ -78,124 +83,106 @@ const HistoryData = (props) => {
 
   // sorting ascending/descending for date/time
   // reverse the given history array as the history is sorted by default by time and live data
-  const sortDateTimeByAsc = () => {
-    document.getElementById("date-time-arrow").innerHTML = "&#8593;&#9776; ";
+  const sortDateTime = () => {
+    clickedArrow ? <span>&#8593;&#9776; </span> : <span>&#8593;&#9776; </span>;
+    setClickedArrow((clicked) => !clicked);
 
     const sorted_array = [...historicalData].reverse();
 
     setHistoricalData(sorted_array);
-    setPaginatedHistoricalData(sorted_array);
-  };
-
-  const sortDateTimeByDesc = () => {
-    document.getElementById("date-time-arrow").innerHTML = "&#8595;&#9776; ";
-
-    const sorted_array = [...historicalData].reverse();
-
-    setHistoricalData(sorted_array);
-    setPaginatedHistoricalData(sorted_array);
+    setPaginatedHistoricalData(
+      lodash(sorted_array).slice(0).take(PAGE_SIZE).value()
+    );
   };
 
   // sorting ascending/descending for crypto alphabetically
-  const sortCryptoByAsc = (e) => {
-    document.getElementById("currency-from-arrow").innerHTML =
-      "&#8593;&#9776; ";
+  const sortCrypto = (e) => {
+    clickedArrow ? <span>&#8593;&#9776; </span> : <span>&#8593;&#9776; </span>;
+    setClickedArrow((clicked) => !clicked);
 
     let field = e.currentTarget.getAttribute("data-value");
+    let sorted_array = [];
 
-    const sorted_array = [...historicalData].sort((obj1, obj2) =>
-      obj1[field].localeCompare(obj2[field])
-    );
-
-    setHistoricalData(sorted_array);
-    setPaginatedHistoricalData(sorted_array);
-  };
-
-  const sortCryptoByDesc = (e) => {
-    document.getElementById("currency-from-arrow").innerHTML =
-      "&#8595;&#9776; ";
-
-    let field = e.currentTarget.getAttribute("data-value");
-
-    const sorted_array = [...historicalData].sort((obj1, obj2) =>
-      obj2[field].localeCompare(obj1[field])
-    );
+    if (clickedArrow) {
+      sorted_array = [...historicalData].sort((obj1, obj2) =>
+        obj1[field].localeCompare(obj2[field])
+      );
+    } else {
+      sorted_array = [...historicalData].sort((obj1, obj2) =>
+        obj2[field].localeCompare(obj1[field])
+      );
+    }
 
     setHistoricalData(sorted_array);
-    setPaginatedHistoricalData(sorted_array);
+    setPaginatedHistoricalData(
+      lodash(sorted_array).slice(0).take(PAGE_SIZE).value()
+    );
   };
 
   // sorting ascending/descending for crypto/currency amounts
-  const sortCryptoAmountByAsc = (e) => {
-    document.getElementById("crypto-amount-arrow").innerHTML =
-      "&#8593;&#9776; ";
+  const sortCryptoAmount = (e) => {
+    clickedArrow ? <span>&#8593;&#9776; </span> : <span>&#8593;&#9776; </span>;
+    setClickedArrow((clicked) => !clicked);
 
     let field = e.currentTarget.getAttribute("data-value");
 
-    const sorted_array = [...historicalData].sort(
-      (obj1, obj2) => obj1[field] - obj2[field]
-    );
+    let sorted_array = [];
+
+    if (clickedArrow) {
+      sorted_array = [...historicalData].sort(
+        (obj1, obj2) => obj1[field] - obj2[field]
+      );
+    } else {
+      sorted_array = [...historicalData].sort(
+        (obj1, obj2) => obj2[field] - obj1[field]
+      );
+    }
 
     setHistoricalData(sorted_array);
-    setPaginatedHistoricalData(sorted_array);
+    setPaginatedHistoricalData(
+      lodash(sorted_array).slice(0).take(PAGE_SIZE).value()
+    );
   };
 
-  const sortCryptoAmountByDesc = (e) => {
-    document.getElementById("crypto-amount-arrow").innerHTML =
-      "&#8595;&#9776; ";
+  const sortCurrencyAmount = (e) => {
+    clickedArrow ? <span>&#8593;&#9776; </span> : <span>&#8593;&#9776; </span>;
+    setClickedArrow((clicked) => !clicked);
 
     let field = e.currentTarget.getAttribute("data-value");
 
-    const sorted_array = [...historicalData].sort(
-      (obj1, obj2) => obj2[field] - obj1[field]
-    );
+    let sorted_array = [];
+
+    if (clickedArrow) {
+      sorted_array = [...historicalData].sort(
+        (obj1, obj2) => obj1[field] - obj2[field]
+      );
+    } else {
+      sorted_array = [...historicalData].sort(
+        (obj1, obj2) => obj2[field] - obj1[field]
+      );
+    }
 
     setHistoricalData(sorted_array);
-    setPaginatedHistoricalData(sorted_array);
-  };
-
-  const sortCurrencyAmountByAsc = (e) => {
-    document.getElementById("currency-amount-arrow").innerHTML =
-      "&#8593;&#9776; ";
-
-    let field = e.currentTarget.getAttribute("data-value");
-
-    const sorted_array = [...historicalData].sort(
-      (obj1, obj2) => obj1[field] - obj2[field]
+    setPaginatedHistoricalData(
+      lodash(sorted_array).slice(0).take(PAGE_SIZE).value()
     );
-
-    setHistoricalData(sorted_array);
-    setPaginatedHistoricalData(sorted_array);
-  };
-
-  const sortCurrencyAmountByDesc = (e) => {
-    document.getElementById("currency-amount-arrow").innerHTML =
-      "&#8595;&#9776; ";
-
-    let field = e.currentTarget.getAttribute("data-value");
-
-    const sorted_array = [...historicalData].sort(
-      (obj1, obj2) => obj2[field] - obj1[field]
-    );
-
-    setHistoricalData(sorted_array);
-    setPaginatedHistoricalData(sorted_array);
   };
 
   // for pagination create page count
-  const page_count = historicalData ? Math.ceil(historicalData.length / 4) : 0;
+  const page_count = historicalData
+    ? Math.ceil(historicalData.length / PAGE_SIZE)
+    : 0;
 
   // store number of pages in an array to map over it each time
-  // lodash.chunk(arr, 4)
   const pages = lodash.range(1, page_count + 1);
 
   // creating function for pagination to update current page and paginated history data
   const pagination = (page) => {
-    const next_page_index = (page - 1) * 4;
+    const next_page_index = (page - 1) * PAGE_SIZE;
 
     setCurrentPage(page);
     setPaginatedHistoricalData(
-      lodash(history).slice(next_page_index).take(4).value()
+      lodash(history).slice(next_page_index).take(PAGE_SIZE).value()
     );
   };
 
@@ -302,12 +289,7 @@ const HistoryData = (props) => {
         <thead>
           <tr>
             <th scope="col" className="fw-bold">
-              <span
-                className="sort-arrow"
-                id="date-time-arrow"
-                onClick={sortDateTimeByAsc}
-                onDoubleClick={sortDateTimeByDesc}
-              >
+              <span className="sort-arrow" onClick={sortDateTime}>
                 &#8593;&#9776;{" "}
               </span>
               Date &amp; Time
@@ -315,9 +297,7 @@ const HistoryData = (props) => {
             <th scope="col" className="fw-normal">
               <span
                 className="sort-arrow"
-                id="currency-from-arrow"
-                onClick={sortCryptoByAsc}
-                onDoubleClick={sortCryptoByDesc}
+                onClick={sortCrypto}
                 data-value="crypto"
               >
                 &#8593;&#9776;{" "}
@@ -327,9 +307,7 @@ const HistoryData = (props) => {
             <th scope="col" className="fw-normal">
               <span
                 className="sort-arrow"
-                id="crypto-amount-arrow"
-                onClick={sortCryptoAmountByAsc}
-                onDoubleClick={sortCryptoAmountByDesc}
+                onClick={sortCryptoAmount}
                 data-value="amount_1"
               >
                 &#8593;&#9776;{" "}
@@ -342,9 +320,7 @@ const HistoryData = (props) => {
             <th scope="col" className="fw-normal">
               <span
                 className="sort-arrow"
-                id="currency-amount-arrow"
-                onClick={sortCurrencyAmountByAsc}
-                onDoubleClick={sortCurrencyAmountByDesc}
+                onClick={sortCurrencyAmount}
                 data-value="amount_2"
               >
                 &#8593;&#9776;{" "}

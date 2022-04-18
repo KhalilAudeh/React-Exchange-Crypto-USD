@@ -37,6 +37,7 @@ class App extends Component {
     };
 
     // binding to make `this` work in the callbacks
+    this.getAPIData = this.getAPIData.bind(this);
     this.handleChangeFrom = this.handleChangeFrom.bind(this);
     this.updateAmount = this.updateAmount.bind(this);
     this.updateUSDAmount = this.updateUSDAmount.bind(this);
@@ -84,6 +85,8 @@ class App extends Component {
     this.getMoment();
 
     this.getAPIData();
+    // removing the first empty object
+    this.state.historical_data.shift();
 
     // load API data rates every 5 minutes
     this.interval = setInterval(() => this.getAPIData(), CONFIG_INTERVAL);
