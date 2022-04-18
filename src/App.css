@@ -1,38 +1,125 @@
-.App {
-  text-align: center;
+.section-title {
+  color: #000000;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* style for exchange toolbar */
+input,
+select {
+  border: 1px solid #e0e0e0 !important;
+  box-sizing: border-box;
+  border-radius: 8px !important;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+select {
+  background-image: url("https://www.kindpng.com/picc/m/111-1119013_downward-arrow-png-drop-down-icon-vector-transparent.png") !important;
+  background-position: right 1.5rem center !important;
+  background-size: 10px 7px !important;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+select:focus {
+  box-shadow: none !important;
+  border: 1px solid #49cd5e !important;
+}
+
+.save-btn {
   color: white;
+  background-color: #49cd5e;
+  border: #49cd5e;
+  border-radius: 8px;
 }
 
-.App-link {
-  color: #61dafb;
+/* style for history table component */
+.table {
+  color: #000000 !important;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.table thead,
+.table tbody tr:nth-child(even) {
+  background-color: #eeeeee;
+}
+
+.live-price {
+  color: #49cd5e;
+}
+
+.table tbody tr:hover {
+  cursor: pointer;
+  border: 1px solid #000000;
+  box-sizing: border-box;
+  border-radius: 4px;
+}
+
+/* style for filter and sort by */
+.filter-btn {
+  color: #1b31a8;
+  background-color: white;
+  border: 1px solid #1b31a8;
+  border-radius: 8px;
+}
+
+.sort-arrow {
+  cursor: pointer;
+}
+
+/* style for pagination */
+.page-item.active .page-link {
+  color: #ffffff !important;
+  background-color: #000000 !important;
+  border: #000000 !important;
+  border-radius: 8px !important;
+}
+
+.page-link {
+  cursor: pointer;
+  color: #000000 !important;
+  border: none !important;
+  border-radius: 8px !important;
+}
+
+.page-link:hover {
+  background-color: #e8f1f1 !important;
+}
+
+.page-link:focus {
+  border: 1px solid #5e9d9f !important;
+}
+
+.prev-next-btn {
+  color: #565d5f;
+}
+
+.prev-next-btn:hover {
+  color: #5e9d9f;
+  cursor: pointer;
+}
+
+.prev-next-btn:focus {
+  color: #223cc7;
+}
+
+.prev-next-btn:active {
+  color: #000000;
+}
+
+/* style for mobile data history */
+.mobile-data-history {
+  background-color: #eff0f6;
+  border: 1px solid #eff0f7;
+  box-sizing: border-box;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.approved-dot {
+  height: 20px !important;
+  width: 20px !important;
+  background-color: #40B439;
+  border-radius: 50%;
+}
+
+.exchanged-dot {
+  height: 20px !important;
+  width: 20px !important;
+  background-color: #6368DF;
+  border-radius: 50%;
 }
