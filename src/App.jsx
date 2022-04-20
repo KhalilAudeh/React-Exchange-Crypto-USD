@@ -101,18 +101,14 @@ class App extends Component {
   handleChangeFrom(event) {
     this.getMoment();
 
-    // getting the index then the label related to the selected option
-    const index = event.nativeEvent.target.selectedIndex;
-    const crypto_label = event.nativeEvent.target[index].text;
-
     // preparing the new object data to be pushed to the historical_data array
     // by updating the crypto label changed/selected
     let newData = {
       moment: this.state.moment_format,
-      crypto: crypto_label,
+      crypto: event.label,
       amount_1: this.state.exchanged_amount,
       currency_to: USD_LABEL,
-      amount_2: this.state.exchanged_amount * event.target.value,
+      amount_2: this.state.exchanged_amount * event.value,
       type: LIVE_LABEL,
     };
 
@@ -120,9 +116,9 @@ class App extends Component {
     this.setState(
       (prevState) => ({
         historical_data: [...prevState.historical_data, newData],
-        currency_from: event.target.value,
-        result: prevState.exchanged_amount * event.target.value,
-        crypto_label: crypto_label,
+        currency_from: event.value,
+        result: prevState.exchanged_amount * event.value,
+        crypto_label: event.label,
       }),
       () => console.log("change from: ", this.state)
     );

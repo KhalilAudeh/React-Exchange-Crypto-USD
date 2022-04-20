@@ -245,7 +245,7 @@ const HistoryData = (props) => {
             onChange={(date) => setStartDate(date)}
             dateFormat="dd/MM/yyyy"
             minDate={new Date()}
-            placeholderText="Select                     &#128198;"
+            placeholderText="Select                     📅"
             className="col-12 p-2"
             isClearable
           />
@@ -259,7 +259,7 @@ const HistoryData = (props) => {
             onChange={(date) => setEndDate(date)}
             dateFormat="dd/MM/yyyy"
             minDate={new Date()}
-            placeholderText="Select                     &#128198;"
+            placeholderText="Select                     📅"
             className="col-12 p-2"
             isClearable
           />

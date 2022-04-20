@@ -1,9 +1,41 @@
 import React from "react";
 import "../App.css";
+import Select, { components } from "react-select";
+
+const { Option } = components;
 
 const ExchangeToolbar = (props) => {
   // saving each in variable to make use in down in JSX
   let cryptos = props.cryptos;
+  let options = [];
+
+  // mapping through cryptos to add array for options with their related labels and icons
+  Object.keys(cryptos).map((key) =>
+    key === "BTC"
+      ? options.push({
+          value: cryptos[key].USD,
+          label: "BTC - Bitcoin",
+          icon: "btc-logo.png",
+        })
+      : options.push({
+          value: cryptos["ETH"].USD,
+          label: "ETH - Ethereum",
+          icon: "eth-logo.jpg",
+        })
+  );
+
+  const IconOption = (args) => {
+    return (
+      <Option {...args}>
+        <img
+          src={require("../icons/" + args.data.icon)}
+          style={{ width: 40 }}
+          alt={args.data.label}
+        />
+        {args.data.label}
+      </Option>
+    );
+  };
 
   return (
     <div>
@@ -20,26 +52,16 @@ const ExchangeToolbar = (props) => {
         <div className="col-11 col-md-3">
           <label className="col-12 text-muted mb-1">Currency from</label>
 
-          <div className="select">
-            <select
-              value={props.currency_from}
+            <Select
+              defaultValue={props.currency_from}
               onChange={props.handleChangeFrom}
-              className="col-12 form-select py-2"
-              required
-            >
-              {/* convert the object response to an array to get keys, entries, values */}
-              {Object.keys(cryptos).map((key) => {
-                if (key === "BTC") {
-                  return (
-                    <option value={cryptos[key].USD}>{key} - Bitcoin</option>
-                  );
-                }
-                return (
-                  <option value={cryptos[key].USD}>{key} - Ethereum</option>
-                );
-              })}
-            </select>
-          </div>
+              options={options}
+              components={{
+                Option: IconOption,
+              }}
+              className="col-12"
+              placeholder="Select"
+            />
         </div>
         {/* crypto amount to be exchanged */}
         <div className="col-11 col-md-2 mt-4 mt-md-0">
@@ -95,7 +117,7 @@ const ExchangeToolbar = (props) => {
       </form>
 
       {/* Error handling for user input */}
-      {props.exchanged_amount === '' && (
+      {props.exchanged_amount === "" && (
         <div
           className="alert alert-danger col-11 col-md-6 mx-2 mx-md-0 mt-2"
           role="alert"

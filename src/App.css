@@ -10,15 +10,33 @@ select {
   border-radius: 8px !important;
 }
 
-select {
-  background-image: url("https://www.kindpng.com/picc/m/111-1119013_downward-arrow-png-drop-down-icon-vector-transparent.png") !important;
-  background-position: right 1.5rem center !important;
-  background-size: 10px 7px !important;
+/* customize react select for crypto drowdown */
+.css-1s2u09g-control {
+  border: 1px solid #e0e0e0 !important;
+  box-sizing: border-box;
+  border-radius: 8px !important;
+  padding: 2px 0 !important;
 }
 
-select:focus {
+.css-1pahdxg-control {
   box-shadow: none !important;
   border: 1px solid #49cd5e !important;
+}
+
+.css-14el2xx-placeholder {
+  color: #000000 !important;
+  margin-left: 10px !important;
+  margin-right: 10px !important;
+}
+
+.css-1n7v3ny-option {
+  color: #565656 !important;
+  background-color: #eeeeee !important;
+  font-weight: 500 !important;
+}
+
+.css-6j8wv5-Input input {
+  border: unset !important;
 }
 
 .save-btn {
