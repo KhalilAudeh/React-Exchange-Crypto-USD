@@ -189,11 +189,6 @@ class App extends Component {
     let updated_data = this.state.historical_data;
     updated_data[updated_data.length - 1].type = EXCHANGED_LABEL;
 
-    // style the new data type in the table
-    document.getElementsByClassName("data-type")[
-      updated_data.length - 1
-    ].style.color = "#6368DF";
-
     this.setState({
       historical_data: updated_data,
     });

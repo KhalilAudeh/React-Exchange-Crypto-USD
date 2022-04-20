@@ -3,8 +3,22 @@ import DatePicker from "react-datepicker";
 import "../App.css";
 import "react-datepicker/dist/react-datepicker.css";
 import lodash from "lodash";
+import Modal from "react-modal";
 
 const PAGE_SIZE = 4;
+const MODAL_CUSTOM_STYLE = {
+  content: {
+    top: "35%",
+    left: "50%",
+    marginRight: "-50%",
+    transform: "translate(-50%, -25%)",
+    border: "unset",
+    background: "#FFFFFF",
+    boxShadow: "0px 8px 30px rgba(0, 0, 0, 0.08)",
+    borderRadius: "16px 16px 0px 0px",
+    color: "#000000",
+  },
+};
 
 const HistoryData = (props) => {
   // get props data and pass to useState for the initial load
@@ -21,7 +35,16 @@ const HistoryData = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   // state boolean for clicking on arrows
-  const [clickedArrow, setClickedArrow] = useState(false);
+  const [clickedDateArrow, setClickedDateArrow] = useState(false);
+  const [clickedCryptoArrow, setClickedCryptoArrow] = useState(false);
+  const [clickedCryptoAmountArrow, setClickedCryptoAmountArrow] =
+    useState(false);
+  const [clickedCurrencyAmountArrow, setClickedCurrencyAmountArrow] =
+    useState(false);
+
+  // state used for clicked modal data details
+  const [dataModal, setDataModal] = useState({});
+  const [showModal, setShowModal] = useState(false);
 
   // when history data changes as trigger, update the component data using the below
   useEffect(() => {
@@ -37,20 +60,23 @@ const HistoryData = (props) => {
   const filter = () => {
     // if user selects start and end dates, filter can be applied
     let moment_array = [],
-      selectedStartDay = startDate.getDate(),
-      selectedStartMonth = startDate.getMonth() + 1,
-      selectedEndDay = startDate.getDate(),
-      selectedEndMonth = startDate.getMonth() + 1;
+      selectedStartDay = "",
+      selectedStartMonth = "",
+      selectedEndDay = "",
+      selectedEndMonth = "";
 
     const filtered = history.filter((data) => {
       // splitting data moment from table to get day and month
       moment_array = data.moment.split("/");
 
       // applying filter by passing start/end dates and type selected
-      if (type !== "All") {
-        if (startDate === null && endDate === null) {
-          return type === data.type;
-        } else {
+      if (startDate !== null && endDate !== null) {
+        selectedStartDay = startDate.getDate();
+        selectedStartMonth = startDate.getMonth() + 1;
+        selectedEndDay = endDate.getDate();
+        selectedEndMonth = endDate.getMonth() + 1;
+
+        if (type !== "All") {
           // if not all, then show only specified type
           return (
             moment_array[0] >= selectedStartDay &&
@@ -59,20 +85,25 @@ const HistoryData = (props) => {
             moment_array[1] <= selectedEndMonth &&
             type === data.type
           );
+        } else {
+          return (
+            moment_array[0] >= selectedStartDay &&
+            moment_array[1] >= selectedStartMonth &&
+            moment_array[0] <= selectedEndDay &&
+            moment_array[1] <= selectedEndMonth
+          );
         }
       } else {
-        return (
-          moment_array[0] >= selectedStartDay &&
-          moment_array[1] >= selectedStartMonth &&
-          moment_array[0] <= selectedEndDay &&
-          moment_array[1] <= selectedEndMonth
-        );
+        // if not all, then show only specified type
+        return type === data.type;
       }
     });
 
     // set the filtered array of data to the history table data
     setHistoricalData(filtered);
-    setPaginatedHistoricalData(filtered);
+    setPaginatedHistoricalData(
+      lodash(filtered).slice(0).take(PAGE_SIZE).value()
+    );
   };
 
   // for sort by dropdown of type
@@ -84,8 +115,7 @@ const HistoryData = (props) => {
   // sorting ascending/descending for date/time
   // reverse the given history array as the history is sorted by default by time and live data
   const sortDateTime = () => {
-    clickedArrow ? <span>&#8593;&#9776; </span> : <span>&#8593;&#9776; </span>;
-    setClickedArrow((clicked) => !clicked);
+    setClickedDateArrow(!clickedDateArrow);
 
     const sorted_array = [...historicalData].reverse();
 
@@ -97,13 +127,13 @@ const HistoryData = (props) => {
 
   // sorting ascending/descending for crypto alphabetically
   const sortCrypto = (e) => {
-    clickedArrow ? <span>&#8593;&#9776; </span> : <span>&#8593;&#9776; </span>;
-    setClickedArrow((clicked) => !clicked);
+    setClickedCryptoArrow(!clickedCryptoArrow);
 
     let field = e.currentTarget.getAttribute("data-value");
+
     let sorted_array = [];
 
-    if (clickedArrow) {
+    if (clickedCryptoArrow) {
       sorted_array = [...historicalData].sort((obj1, obj2) =>
         obj1[field].localeCompare(obj2[field])
       );
@@ -121,20 +151,19 @@ const HistoryData = (props) => {
 
   // sorting ascending/descending for crypto/currency amounts
   const sortCryptoAmount = (e) => {
-    clickedArrow ? <span>&#8593;&#9776; </span> : <span>&#8593;&#9776; </span>;
-    setClickedArrow((clicked) => !clicked);
+    setClickedCryptoAmountArrow(!clickedCryptoAmountArrow);
 
     let field = e.currentTarget.getAttribute("data-value");
 
     let sorted_array = [];
 
-    if (clickedArrow) {
+    if (clickedCryptoAmountArrow) {
       sorted_array = [...historicalData].sort(
-        (obj1, obj2) => obj1[field] - obj2[field]
+        (obj1, obj2) => obj2[field] - obj1[field]
       );
     } else {
       sorted_array = [...historicalData].sort(
-        (obj1, obj2) => obj2[field] - obj1[field]
+        (obj1, obj2) => obj1[field] - obj2[field]
       );
     }
 
@@ -145,20 +174,19 @@ const HistoryData = (props) => {
   };
 
   const sortCurrencyAmount = (e) => {
-    clickedArrow ? <span>&#8593;&#9776; </span> : <span>&#8593;&#9776; </span>;
-    setClickedArrow((clicked) => !clicked);
+    setClickedCurrencyAmountArrow(!clickedCurrencyAmountArrow);
 
     let field = e.currentTarget.getAttribute("data-value");
 
     let sorted_array = [];
 
-    if (clickedArrow) {
+    if (clickedCurrencyAmountArrow) {
       sorted_array = [...historicalData].sort(
-        (obj1, obj2) => obj1[field] - obj2[field]
+        (obj1, obj2) => obj2[field] - obj1[field]
       );
     } else {
       sorted_array = [...historicalData].sort(
-        (obj1, obj2) => obj2[field] - obj1[field]
+        (obj1, obj2) => obj1[field] - obj2[field]
       );
     }
 
@@ -184,6 +212,16 @@ const HistoryData = (props) => {
     setPaginatedHistoricalData(
       lodash(history).slice(next_page_index).take(PAGE_SIZE).value()
     );
+  };
+
+  // get data details for modal use on mobile version
+  const getDataDetails = (data) => {
+    setDataModal(data);
+    setShowModal(true);
+  };
+
+  const hideModal = () => {
+    setShowModal(false);
   };
 
   return (
@@ -289,42 +327,82 @@ const HistoryData = (props) => {
         <thead>
           <tr>
             <th scope="col" className="fw-bold">
-              <span className="sort-arrow" onClick={sortDateTime}>
-                &#8593;&#9776;{" "}
-              </span>
+              {!clickedDateArrow && (
+                <span className="sort-arrow" onClick={sortDateTime}>
+                  &#8593;&#9776;{" "}
+                </span>
+              )}
+              {clickedDateArrow && (
+                <span className="sort-arrow" onClick={sortDateTime}>
+                  &#8595;&#9776;{" "}
+                </span>
+              )}
               Date &amp; Time
             </th>
             <th scope="col" className="fw-normal">
-              <span
-                className="sort-arrow"
-                onClick={sortCrypto}
-                data-value="crypto"
-              >
-                &#8593;&#9776;{" "}
-              </span>
+              {!clickedCryptoArrow && (
+                <span
+                  className="sort-arrow"
+                  data-value="crypto"
+                  onClick={sortCrypto}
+                >
+                  &#8593;&#9776;{" "}
+                </span>
+              )}
+              {clickedCryptoArrow && (
+                <span
+                  className="sort-arrow"
+                  data-value="crypto"
+                  onClick={sortCrypto}
+                >
+                  &#8595;&#9776;{" "}
+                </span>
+              )}
               Currency From
             </th>
             <th scope="col" className="fw-normal">
-              <span
-                className="sort-arrow"
-                onClick={sortCryptoAmount}
-                data-value="amount_1"
-              >
-                &#8593;&#9776;{" "}
-              </span>
+              {!clickedCryptoAmountArrow && (
+                <span
+                  className="sort-arrow"
+                  onClick={sortCryptoAmount}
+                  data-value="amount_1"
+                >
+                  &#8593;&#9776;{" "}
+                </span>
+              )}
+              {clickedCryptoAmountArrow && (
+                <span
+                  className="sort-arrow"
+                  onClick={sortCryptoAmount}
+                  data-value="amount_1"
+                >
+                  &#8595;&#9776;{" "}
+                </span>
+              )}
               Amount 1
             </th>
             <th scope="col" className="fw-normal">
               Currency To
             </th>
             <th scope="col" className="fw-normal">
-              <span
-                className="sort-arrow"
-                onClick={sortCurrencyAmount}
-                data-value="amount_2"
-              >
-                &#8593;&#9776;{" "}
-              </span>
+              {!clickedCurrencyAmountArrow && (
+                <span
+                  className="sort-arrow"
+                  onClick={sortCurrencyAmount}
+                  data-value="amount_2"
+                >
+                  &#8593;&#9776;{" "}
+                </span>
+              )}
+              {clickedCurrencyAmountArrow && (
+                <span
+                  className="sort-arrow"
+                  onClick={sortCurrencyAmount}
+                  data-value="amount_2"
+                >
+                  &#8595;&#9776;{" "}
+                </span>
+              )}
               Amount 2
             </th>
             <th scope="col" className="fw-normal">
@@ -347,7 +425,14 @@ const HistoryData = (props) => {
                   <td>{data.amount_1}</td>
                   <td>{data.currency_to}</td>
                   <td>{data.amount_2}</td>
-                  <td className="fw-bold live-price data-type">{data.type}</td>
+                  <td
+                    className="fw-bold"
+                    style={{
+                      color: data.type === "Live Price" ? "#49cd5e" : "#6368DF",
+                    }}
+                  >
+                    {data.type}
+                  </td>
                 </tr>
               );
             }
@@ -362,7 +447,10 @@ const HistoryData = (props) => {
         {paginatedHistoricalData.map((data) => {
           if (data.crypto !== "" && data.amount_1 !== "") {
             return (
-              <div className="col-10 mobile-data-history mb-4 mx-auto p-4">
+              <div
+                className="col-10 mobile-data-history mb-4 mx-auto p-4"
+                onClick={getDataDetails.bind(this, data)}
+              >
                 <div className="row fw-bold mb-2 justify-content-between">
                   <div className="col-8 p-0">
                     {data.crypto} &#8594; {data.currency_to}
@@ -385,8 +473,124 @@ const HistoryData = (props) => {
         })}
       </div>
 
+      {/* react modal popup for data details on mobile version */}
+      <Modal
+        isOpen={showModal}
+        onRequestClose={hideModal}
+        style={MODAL_CUSTOM_STYLE}
+      >
+        <div className="row fw-bold mt-2">
+          <div className="col">
+            <h6 className="fw-bold">Exchange</h6>
+          </div>
+          <div
+            className="col-1 p-0"
+            onClick={hideModal}
+            style={{ cursor: "pointer" }}
+          >
+            &#10006;
+          </div>
+        </div>
+
+        <hr className="my-4" />
+
+        {/* date/time data */}
+        <div className="row">
+          <div className="col-5">
+            <label>Date &amp; Time</label>
+          </div>
+
+          <div className="col">
+            <span>{dataModal.moment}</span>
+          </div>
+        </div>
+
+        {/* data status */}
+        <div className="row my-2">
+          <div className="col-5 text-muted">
+            <label>Status</label>
+          </div>
+
+          <div className="col">
+            {dataModal.type === "Live Price" && (
+              <div className="row px-2">
+                <div className="col-2 approved-dot"></div>
+                <span className="col approved-status">Approved</span>
+              </div>
+            )}
+
+            {dataModal.type === "Exchanged" && (
+              <div className="row px-2">
+                <div className="col-2 exchanged-dot"></div>
+                <span className="col exchanged-status">Exchanged</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* from currency: crypto */}
+        <div className="row">
+          <div className="col-5 text-muted">
+            <label>From</label>
+          </div>
+
+          <div className="col">
+            <span>{dataModal.crypto}</span>
+          </div>
+        </div>
+
+        {/* to currency: USD */}
+        <div className="row my-2">
+          <div className="col-5 text-muted">
+            <label>To</label>
+          </div>
+
+          <div className="col">
+            <span>{dataModal.currency_to}</span>
+          </div>
+        </div>
+
+        {/* crypto/USD amounts */}
+        <div className="row">
+          <div className="col-5 text-muted">
+            <label>Amount</label>
+          </div>
+
+          <div className="col">
+            <span>
+              {dataModal.amount_1} {dataModal.crypto}
+            </span>
+          </div>
+        </div>
+
+        <div className="row my-2">
+          <div className="col-5 text-muted">
+            <label>Total</label>
+          </div>
+
+          <div className="col">
+            <span>
+              {"$ "}
+              {dataModal.amount_2}
+            </span>
+          </div>
+        </div>
+
+        {/* close button */}
+        <div className="row mt-4">
+          <div className="col-11">
+            <button
+              className="col-12 mt-1 save-btn px-4 py-2"
+              onClick={hideModal}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </Modal>
+
       {/* history table pagination */}
-      <nav className="mt-4 mx-3">
+      <nav className="mt-4 mx-3 mx-md-0">
         <ul className="pagination">
           {pages.includes(currentPage - 1) && (
             <span
