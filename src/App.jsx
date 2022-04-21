@@ -58,8 +58,7 @@ class App extends Component {
             cryptos: response.data,
             currency_from: response.data["BTC"].USD,
             exchanged_amount: this.state.exchanged_amount,
-            result:
-              this.state.exchanged_amount * response.data["BTC"].USD,
+            result: this.state.exchanged_amount * response.data["BTC"].USD,
             historical_data: [
               ...prevState.historical_data,
               {
@@ -120,7 +119,7 @@ class App extends Component {
         result: prevState.exchanged_amount * event.value,
         crypto_label: event.label,
       }),
-      () => console.log("change from: ", this.state)
+      () => console.log("change crypto label from: ", this.state)
     );
   }
 
@@ -146,7 +145,7 @@ class App extends Component {
         exchanged_amount: event.target.value,
         result: prevState.currency_from * event.target.value,
       }),
-      () => console.log("change amount", this.state)
+      () => console.log("change crypto amount", this.state)
     );
   }
 
@@ -172,30 +171,40 @@ class App extends Component {
         exchanged_amount: event.target.value / prevState.currency_from,
         result: event.target.value,
       }),
-      () => console.log("change amount", this.state)
+      () => console.log("change USD amount", this.state)
     );
   }
 
   // save exchange into history array and update data type to exchanged
-  saveExchange(e) {
+  saveExchange(event) {
     // to prevent from refreshing the page
-    e.preventDefault();
+    event.preventDefault();
 
-    // updating the last data type to exchanged when user clicks on exchange button
-    let updated_data = this.state.historical_data;
-    updated_data[updated_data.length - 1].type = EXCHANGED_LABEL;
+    // preparing the new object data to be pushed to the historical_data array to update data type to exchanged
+    let newData = {
+      moment: this.state.moment_format,
+      crypto: this.state.crypto_label,
+      amount_1: this.state.exchanged_amount,
+      currency_to: USD_LABEL,
+      amount_2: this.state.result,
+      type: EXCHANGED_LABEL,
+    };
 
-    this.setState({
-      historical_data: updated_data,
-    });
+    // pushing the new object data to the existing history array with previous state
+    this.setState(
+      (prevState) => ({
+        historical_data: [...prevState.historical_data, newData],
+      }),
+      () => console.log("exchange user data inputs", this.state)
+    );
   }
 
   // get the moment so be used in table component on live/exchanged price in given format
   // call this method in the methods while handling any change
   getMoment() {
-    const today = new Date();
+    let today = new Date();
 
-    const moment_format =
+    let moment_format =
       today.getDate() +
       "/" +
       (today.getMonth() + 1) +

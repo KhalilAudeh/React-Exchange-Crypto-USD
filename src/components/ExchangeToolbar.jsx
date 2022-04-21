@@ -6,7 +6,7 @@ const { Option } = components;
 
 const ExchangeToolbar = (props) => {
   // saving each in variable to make use in down in JSX
-  let cryptos = props.cryptos;
+  const cryptos = props.cryptos;
   let options = [];
 
   // mapping through cryptos to add array for options with their related labels and icons

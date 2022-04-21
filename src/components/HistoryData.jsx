@@ -129,7 +129,7 @@ const HistoryData = (props) => {
   const sortCrypto = (e) => {
     setClickedCryptoArrow(!clickedCryptoArrow);
 
-    let field = e.currentTarget.getAttribute("data-value");
+    const field = e.currentTarget.getAttribute("data-value");
 
     let sorted_array = [];
 
@@ -153,7 +153,7 @@ const HistoryData = (props) => {
   const sortCryptoAmount = (e) => {
     setClickedCryptoAmountArrow(!clickedCryptoAmountArrow);
 
-    let field = e.currentTarget.getAttribute("data-value");
+    const field = e.currentTarget.getAttribute("data-value");
 
     let sorted_array = [];
 
@@ -176,7 +176,7 @@ const HistoryData = (props) => {
   const sortCurrencyAmount = (e) => {
     setClickedCurrencyAmountArrow(!clickedCurrencyAmountArrow);
 
-    let field = e.currentTarget.getAttribute("data-value");
+    const field = e.currentTarget.getAttribute("data-value");
 
     let sorted_array = [];
 
@@ -197,16 +197,16 @@ const HistoryData = (props) => {
   };
 
   // for pagination create page count
-  const page_count = historicalData
+  let page_count = historicalData
     ? Math.ceil(historicalData.length / PAGE_SIZE)
     : 0;
 
   // store number of pages in an array to map over it each time
-  const pages = lodash.range(1, page_count + 1);
+  let pages = lodash.range(1, page_count + 1);
 
   // creating function for pagination to update current page and paginated history data
   const pagination = (page) => {
-    const next_page_index = (page - 1) * PAGE_SIZE;
+    let next_page_index = (page - 1) * PAGE_SIZE;
 
     setCurrentPage(page);
     setPaginatedHistoricalData(
